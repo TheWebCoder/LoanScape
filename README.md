@@ -1,7 +1,7 @@
 # LoanScape
 
 ## Overview
-Build an application that generates an amortization shedule for a simple interest loan. This project is an interactive tool that helps in calculating loan payments, understanding amortization schedules, and exploring different loan scenarios.
+Build an application that generates an amortization shedule for a simple interest loan. This project is an interactive tool that helps calculating loan payments, understanding amortization schedules, and exploring different loan scenarios.
 
 ## Features
 - **Loan Calculator**: Provides an easy-to-use interface for calculating monthly payments based on loan amount, interest rate, and loan term.
