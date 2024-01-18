@@ -2,7 +2,7 @@
 <html lang="en" class="h-100">
 
 <head>
-    <title>App Name: A Coding Project By Bryan Gonzalez</title>
+    <title>LoanScape: A Coding Project By Bryan Gonzalez</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -28,32 +28,32 @@
 <body class="d-flex flex-column h-100">
 <!-- Nav Section -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img src="img/centibold-small-white.png" class="d-inline-block align-text-top ps-2" height="37" alt=""></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="app.html">The App</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="code.html">The Code</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" target="_blank" href="#">Git Repo</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" target="_blank" href="#">About</a>
-                </li>
-            </ul>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><img src="img/lonscape-white-logo.png" class="d-inline-block align-text-top ps-2" height="29" alt=""></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="app.html">The App</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="code.html">The Code</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://github.com/TheWebCoder/LoanScape/">Git Repo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://bryangonzalez.dev/">About</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
     </nav>
 
     <!-- Main Section -->
@@ -63,17 +63,133 @@
             <div class="row row-cols-1 row-cols-lg-2">
                 <div class="col-lg-8">
                     <pre class="line-numbers"><code class="language-javascript">
-                        //Call Hello World
-                        function HelloWorld() {
-                            alert("Hello World");
+                        //get the values from the user
+                        //controller function
+                        function getValues() {
+                            //gets the value from the page
+                            let loanAmount = document.getElementById("loanAmount").value;
+                            let paymentAmount = document.getElementById("paymentAmount").value;
+                            let rateAmount = document.getElementById("rateAmount").value;
+
+                            //We need to validate our input
+                            //parse into Integers
+                            loanAmount = parseInt(loanAmount);
+                            paymentAmount = parseInt(paymentAmount);
+                            rateAmount = parseInt(rateAmount);
+
+                            if (Number.isInteger(loanAmount) && Number.isInteger(paymentAmount) && Number.isInteger(rateAmount)) {
+                                let monthlyPayment = totalMonthlyPayment(loanAmount, paymentAmount, rateAmount);
+                                //call calculatePayment
+                            let monthlyRow = calculatePayment(loanAmount, paymentAmount, rateAmount);
+                                //call display data by passing in the array
+                                displayData(monthlyRow, monthlyPayment, loanAmount);
+                            } else {
+                                alert("You must enter integers");
+                            }
+                        }
+
+                        //Logic function responsible for calculating payments
+                        function calculatePayment(loanAmount, paymentAmount, rateAmount) {
+                            let monthlyRow = [];
+                            let monthlyPayment = totalMonthlyPayment(loanAmount, paymentAmount, rateAmount);
+                            let remainingBalance = loanAmount;
+                            let interestPayment;
+                            let principalPayment;
+                            let totalInterest = 0;
+
+                            for(let i = 1; i <= paymentAmount; i++) {
+                                interestPayment = remainingBalance * rateAmount/1200;
+                                principalPayment = monthlyPayment - interestPayment;
+                                totalInterest += interestPayment;
+                                // using the exact principalPayment value to update the balance
+                                remainingBalance -= principalPayment; 
+                                // rounding the principal for display
+                                //monthlyRow.push(i, monthlyPayment, Math.round(principalPayment * 100) / 100 , Math.round(interestPayment * 100) / 100, Math.round(totalInterest * 100) / 100, Math.round(remainingBalance * 100) / 100);
+                                if (remainingBalance < 0)
+                                {
+                                    remainingBalance = 0;
+                                }
+                                monthlyRow.push(i, monthlyPayment, principalPayment, interestPayment, totalInterest, remainingBalance);
+                                
+                            }
+
+                            return monthlyRow;
+                        }
+
+
+                        //calculates the total monthly payment
+                        function totalMonthlyPayment(loanAmount, paymentAmount, rateAmount) {
+                            let monthlyPayment = (loanAmount * (rateAmount/1200)) / (1 - Math.pow((1 + rateAmount/1200), -paymentAmount));
+                            //monthlyPayment = Math.round(monthlyPayment * 100) / 100;
+                            return monthlyPayment;
+                        }
+
+
+                        //displays the data on the screen
+                        function displayData(monthlyRow, monthlyPayment, loanAmount) {
+
+                            let monthlyPaymentText = document.getElementById("monthlyPaymentText");
+                            let totalPrincipalText = document.getElementById("totalPrincipal");
+                            let totalInterestText = document.getElementById("totalInterest");
+                            let totalRateText = document.getElementById("totalRate");
+
+                            //get the table body element from the page
+                            let tableBody = document.getElementById("results");
+
+                            //get the template row
+                            let templateRow = document.getElementById("rowTemplate");
+
+                            // Format the numbers
+                            let formattedMonthlyPayment = monthlyPayment.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                            let formattedLoanAmount = loanAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                            let formattedTotalInterest = monthlyRow[monthlyRow.length - 2].toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                            let formattedTotalRate = (loanAmount + monthlyRow[monthlyRow.length - 2]).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
+
+
+                            monthlyPaymentText.textContent = formattedMonthlyPayment;
+                            totalPrincipalText.textContent = formattedLoanAmount;
+                            totalInterestText.textContent = formattedTotalInterest;
+                            totalRateText.textContent = formattedTotalRate;
+                        
+                            //clear table first
+                            tableBody.innerHTML = "";
+
+                            for (let i = 0; i < monthlyRow.length; i += 6) {
+
+                                let tableRow = document.importNode(templateRow.content, true);
+
+                                //grab just the td and put into array
+                                let rowCols = tableRow.querySelectorAll("td");
+                            
+                                rowCols[0].textContent = monthlyRow[i];
+                                rowCols[1].textContent = monthlyRow[i+1].toFixed(2);
+                                rowCols[2].textContent = monthlyRow[i+2].toFixed(2);
+                                rowCols[3].textContent = monthlyRow[i+3].toFixed(2);
+                                rowCols[4].textContent = monthlyRow[i+4].toFixed(2);
+                                rowCols[5].textContent = monthlyRow[i+5].toFixed(2);
+                            
+
+                                tableBody.appendChild(tableRow);
+                            }
                         }
                     </code>
                     </pre>
                 </div>
                 <div class="col-lg-4">
-                    <p>The Code is structured in one function.</p>
-                    <h5>Hello World</h5>
-                    <p>Hello World is a function that displays an alert with a message of "Hello World"</p>
+                    <p>The code consists of four main functions</p>
+                    <h5>getValues()</h5>
+                    <p>The entry point of the application, it is triggered by an event listener on the submit button of the app page. This function retrieves the 'loanAmount', 'paymentAmount' and 'rateAmount' entered by the user. From there, those values are parsed into integers then validated. If all values are valid integers, it runs a calculation to find monthly payment using the totalMonthlyPayment function and also generates a payment schedule using the calculatePayment function. Finally, these results will be passed to the displayData function for rendering onto the page. If any input is not an integer, an alert is displayed to prompt the user for correct integer inputs.</p>
+
+                    <h5>calculatePayment(loanAmount, paymentAmount, rateAmount)</h5>
+                    <p>This logic function is responsible for calculating a schedule of payments. It calculates monthly payments, and then iteratively calculates the interest payment, principal payment, total interest, and the remaining balance for each period until the loan is fully paid back. The return value of this function is an array which contains the details of every single payment period.</p>
+
+                    <h5>totalMonthlyPayment(loanAmount, paymentAmount, rateAmount)</h5>
+                    <p>This additional function calculates the total monthly payment. The payment depends on the loan amount, number of payments, and interest rate. It uses the formula for an annuity to determine the payment and returns the calculated monthly payment amount.</p>
+
+                    <h5>displayData(monthlyRow, monthlyPayment, loanAmount)</h5>
+                    <p>This function displays loan payment data on the app page. More specifically it displays formatted values for monthly payment, total principal, total interest and total amount paid over the life of the loan. The function also dynamically creates a table that displays the payment schedule which includes payment number, monthly payment, principal, interest, total interest so far and remaining balance for each period.</p>
+
                 </div>
             </div>
         </div>
@@ -86,12 +202,12 @@
                     <div><span class="text-muted">&copy;2023</span> Bryan Gonzalez | bryan@bryangonzalez.dev</div>
                 </div>
                 <div class="col d-flex align-items-center justify-content-start justify-content-lg-center">
-                    <img src="img/logo-full-name-dark.png" alt="Bryan Gonzalez Logo">
+                    <a href="https://bryangonzalez.dev/" target="_blank"><img src="img/logo-full-name-dark.png" alt="Bryan Gonzalez Logo"></a>
                 </div>
                 <div class="col d-flex align-items-center justify-content-start justify-content-lg-end">
                     <div class="row">
-                        <div class="col social"><a href="#" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a></div>
-                        <div class="col social"><a href="#" target="_blank"><i class="fab fa-github fa-2x"></i></a></div>
+                        <div class="col social"><a href="https://www.linkedin.com/in/the-web-coder/" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a></div>
+                        <div class="col social"><a href="https://github.com/TheWebCoder/" target="_blank"><i class="fab fa-github fa-2x"></i></a></div>
                         <div class="col social"><a href="#" target="_blank"><i class="fab fa-twitter fa-2x"></i></a></div>
                     </div>
                 </div>

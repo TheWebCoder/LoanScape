@@ -1,5 +1,5 @@
 :root {
-    --primary-color: #3559E6;
+    --primary-color: #6B4797;
     --secondary-color: #ff993b;
     --dark-color: #292929;
     --white-color: #e7e7e7;
@@ -53,7 +53,7 @@ footer .social>a:hover {
 }
 
 .checklist > li i {
-    color: green;
+    color: var(--primary-color);
 }
 
 code[class*="language-"],
@@ -65,8 +65,12 @@ code[class*="language-"],
 
 main>.container {
     padding: 60px 15px 0;
-    margin-bottom: 5rem;
 }
+
+.tablePurpleBg {
+    --bs-table-bg: #5A3196;
+}
+
 .sticky-footer {
     position: sticky;
     left: 0;
