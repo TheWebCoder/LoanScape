@@ -17,4 +17,5 @@ Build an application that generates an amortization shedule for a simple interes
 ## Technology Stack
 - **HTML**
 - **CSS**
+- **Bootstrap**
 - **JavaScript**
